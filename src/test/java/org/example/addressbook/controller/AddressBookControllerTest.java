@@ -20,7 +20,7 @@ class AddressBookControllerTest {
  @Test
     void testFindAll(){
      webTestClient.get()
-             .uri("/api/v1/addressbookS")
+             .uri("/api/v1/addressbooks")
              .exchange()
              .expectStatus().isOk();
  }
