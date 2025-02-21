@@ -31,15 +31,31 @@ class AddressBookApplicationTests {
 	@Test // Тест для проверки метода получения всех записей из адресной книги.
 	void testFindAll(){
 		webTestClient.get() // Выполняем GET-запрос к эндпоинту /api/v1/addressbookS.
-				.uri("/api/v1/addressbookS")
+				.uri("/api/v1/addressbooks")
 				.exchange()// Отправляем запрос.
 				.expectStatus().isOk()// Ожидаем статус ответа 200 OK.
-				.expectBody() // Проверяем тело ответа.      указание "[]" проверяет пустая ли база данных
+				.expectBody() // Проверяем тело ответа. указание "[]" проверяет пустая ли база данных
 				// Ожидаем, что тело ответа будет соответствовать указанному JSON.
 				.json("""  
-[{"id":-2,"firstName":"Petr","lastName":"Petrov","phone":"+79111111111","birthday":"1990-01-01"},
-{"id":-1,"firstName":"Aleksey","lastName":"Alekseev","phone":"+79000000000","birthday":"1980-01-01"}]
-""");
+                [{"id":-2,"firstName":"Petr","lastName":"Petrov","phone":"+79111111111","birthday":"1990-01-01"},
+                {"id":-1,"firstName":"Aleksey","lastName":"Alekseev","phone":"+79000000000","birthday":"1980-01-01"}]
+                 """);
+	}
+	@Test // Тест для проверки метода получения всех записей из адресной книги.
+	void testFindAllPagination(){
+		webTestClient.get() // Выполняем GET-запрос к эндпоинту /api/v1/addressbookS.
+				//.uri("/api/v1/addressbooks?page=0&size=1")// запрос на первую запись из базы
+				.uri(uriBuilder -> uriBuilder.path("/api/v1/addressbooks") // альтернативный вариант если параметров будет много чтобы не запутаться
+						.queryParam("page", "0") // запрашиваем первую страницу
+						.queryParam("size", "1") // размер  1 запись
+						.build() )
+				.exchange()// Отправляем запрос.
+				.expectStatus().isOk()// Ожидаем статус ответа 200 OK.
+				.expectBody() // Проверяем тело ответа. указание "[]" проверяет пустая ли база данных
+				// Ожидаем, что тело ответа будет соответствовать указанному JSON.
+				.json("""  
+                [{"id":-2,"firstName":"Petr","lastName":"Petrov","phone":"+79111111111","birthday":"1990-01-01"}]
+                 """);
 	}
 	@Test // Тест для проверки метода сохранения новой записи в адресной книге.
 	void testSave() {
